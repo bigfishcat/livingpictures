@@ -26,4 +26,6 @@ sealed interface Intent {
     data object DeletePage : Intent
 
     data object CreatePage : Intent
+
+    data object HidePopup : Intent
 }

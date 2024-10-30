@@ -3,6 +3,8 @@ package com.github.bigfishcat.livingpictures.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Background = Color(0xFF000000)
+val PopupBackground = Color(0x24000000)
+val PopupStroke = Color(0x29555454)
 
 val Selected = Color(0xFFA8DB10)
 val Active = Color(0xFFFFFFFF)
