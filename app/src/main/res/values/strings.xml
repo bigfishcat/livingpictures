@@ -8,6 +8,7 @@
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="pencil">Pencil</string>
+    <string name="palette">Palette</string>
     <string name="brush">Brush</string>
     <string name="eraser">Eraser</string>
     <string name="color">Color picker</string>

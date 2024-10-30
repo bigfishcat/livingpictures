@@ -15,10 +15,12 @@ import com.github.bigfishcat.livingpictures.model.handleAction
 import com.github.bigfishcat.livingpictures.model.AppUiState
 import com.github.bigfishcat.livingpictures.model.BottomBarUiState
 import com.github.bigfishcat.livingpictures.model.Intent
+import com.github.bigfishcat.livingpictures.model.PopupShown
 import com.github.bigfishcat.livingpictures.model.TopBarUiState
 import com.github.bigfishcat.livingpictures.model.createBottomBarState
 import com.github.bigfishcat.livingpictures.ui.bar.BottomBar
 import com.github.bigfishcat.livingpictures.ui.bar.TopBar
+import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
 import com.github.bigfishcat.livingpictures.ui.theme.Background
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 
@@ -57,6 +59,14 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
                     .padding(innerPadding)
                     .fillMaxSize()
             )
+
+            when (appState.value.popupShown) {
+                PopupShown.None -> {}
+                PopupShown.PaletteColorPicker -> PaletteColorPicker(::handleAction)
+                PopupShown.WheelColorPicker -> TODO()
+                PopupShown.FiguresPicker -> TODO()
+                PopupShown.PagesPreview -> TODO()
+            }
         }
     }
 }

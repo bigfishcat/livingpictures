@@ -7,6 +7,7 @@ fun handleAction(
 ) {
     val state = appState.copy(popupShown = PopupShown.None)
     when (intent) {
+        Intent.HidePopup -> return
         Intent.CreatePage -> TODO()
         Intent.DeletePage -> TODO()
         Intent.Pause -> {

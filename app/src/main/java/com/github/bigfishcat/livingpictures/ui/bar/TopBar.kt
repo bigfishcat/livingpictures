@@ -29,8 +29,7 @@ fun TopBar(
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         IconButton(
             onClick = { action(Intent.Undo) },
-            enabled = uiState.value.canUndo,
-            modifier = modifier
+            enabled = uiState.value.canUndo
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(
@@ -42,8 +41,7 @@ fun TopBar(
 
         IconButton(
             onClick = { action(Intent.Redo) },
-            enabled = uiState.value.canRedo,
-            modifier = modifier
+            enabled = uiState.value.canRedo
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(
@@ -55,21 +53,21 @@ fun TopBar(
 
         Spacer(modifier = modifier.weight(weight = 1.0f))
 
-        IconButton(onClick = { action(Intent.DeletePage) }, modifier = modifier) {
+        IconButton(onClick = { action(Intent.DeletePage) }) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.bin),
                 contentDescription = stringResource(id = R.string.bin)
             )
         }
 
-        IconButton(onClick = { action(Intent.CreatePage) }, modifier = modifier) {
+        IconButton(onClick = { action(Intent.CreatePage) }) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.resource_new),
                 contentDescription = stringResource(id = R.string.add_page)
             )
         }
 
-        IconButton(onClick = { action(Intent.ShowPagesPreview) }, modifier = modifier) {
+        IconButton(onClick = { action(Intent.ShowPagesPreview) }) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.layers),
                 contentDescription = stringResource(id = R.string.all)
@@ -80,8 +78,7 @@ fun TopBar(
 
         IconButton(
             onClick = { action(Intent.Pause) },
-            enabled = uiState.value.playbackInProgress,
-            modifier = modifier
+            enabled = uiState.value.playbackInProgress
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(
@@ -93,8 +90,7 @@ fun TopBar(
 
         IconButton(
             onClick = { action(Intent.Play) },
-            enabled = !uiState.value.playbackInProgress,
-            modifier = modifier
+            enabled = !uiState.value.playbackInProgress
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(

@@ -35,8 +35,7 @@ fun BottomBar(
     val selectedItem = uiState.value.selectedItem
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         IconButton(
-            onClick = { action(Intent.SelectInstrument(Instrument.Pencil)) },
-            modifier = modifier
+            onClick = { action(Intent.SelectInstrument(Instrument.Pencil)) }
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.pencil),
@@ -45,8 +44,7 @@ fun BottomBar(
             )
         }
         IconButton(
-            onClick = { action(Intent.SelectInstrument(Instrument.Brush)) },
-            modifier = modifier
+            onClick = { action(Intent.SelectInstrument(Instrument.Brush)) }
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.brush),
@@ -55,8 +53,7 @@ fun BottomBar(
             )
         }
         IconButton(
-            onClick = { action(Intent.SelectInstrument(Instrument.Eraser)) },
-            modifier = modifier
+            onClick = { action(Intent.SelectInstrument(Instrument.Eraser)) }
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.erase),
@@ -65,8 +62,7 @@ fun BottomBar(
             )
         }
         IconButton(
-            onClick = { action(Intent.ShowFiguresPicker) },
-            modifier = modifier
+            onClick = { action(Intent.ShowFiguresPicker) }
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.instruments),
@@ -75,8 +71,7 @@ fun BottomBar(
             )
         }
         IconButton(
-            onClick = { action(Intent.ShowPaletteColorPicker) },
-            modifier = modifier
+            onClick = { action(Intent.ShowPaletteColorPicker) }
         ) {
             Image(
                 imageVector = ImageVector.vectorResource(id = R.drawable.circle),
