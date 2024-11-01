@@ -24,6 +24,7 @@ import com.github.bigfishcat.livingpictures.ui.bar.BottomBar
 import com.github.bigfishcat.livingpictures.ui.bar.TopBar
 import com.github.bigfishcat.livingpictures.ui.popup.FigurePicker
 import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
+import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
 import com.github.bigfishcat.livingpictures.ui.theme.Background
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 
@@ -73,7 +74,7 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
                 PopupShown.PaletteColorPicker -> PaletteColorPicker(::handleAction)
                 PopupShown.WheelColorPicker -> TODO()
                 PopupShown.FiguresPicker -> FigurePicker(::handleAction)
-                PopupShown.PagesPreview -> TODO()
+                PopupShown.PagesPreview -> PreviewListPopup(pagesRepository.pages, ::handleAction)
             }
         }
     }
