@@ -13,4 +13,8 @@
     <string name="eraser">Eraser</string>
     <string name="color">Color picker</string>
     <string name="instruments">Figures</string>
+    <string name="circle">Circle</string>
+    <string name="square">Rectangle</string>
+    <string name="triangle">Triangle</string>
+    <string name="arrow">Arrow</string>
 </resources>

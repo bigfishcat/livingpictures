@@ -1,15 +1,11 @@
 package com.github.bigfishcat.livingpictures.model
 
-import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
-import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 
-@Parcelize
 data class BottomBarUiState(
-    val color: @RawValue Color = Color.Blue,
+    val color: Color = Color.Blue,
     val selectedItem: BottomItem = BottomItem.Pencil,
-) : Parcelable
+)
 
 enum class BottomItem {
     Pencil,

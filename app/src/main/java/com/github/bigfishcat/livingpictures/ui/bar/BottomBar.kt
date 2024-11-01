@@ -90,7 +90,7 @@ fun BottomBar(
 
 @Preview(backgroundColor = 0xFF000000)
 @Composable
-fun DefaultBottomBar() {
+private fun DefaultBottomBar() {
     LivingPicturesTheme {
         val uiState = remember {
             mutableStateOf(BottomBarUiState())
