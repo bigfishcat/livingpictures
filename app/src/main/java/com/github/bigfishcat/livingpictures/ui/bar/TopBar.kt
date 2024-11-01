@@ -115,7 +115,7 @@ fun DefaultTopBar() {
 
 @Preview(backgroundColor = 0xFF000000)
 @Composable
-fun TopBarWithUndoRedo() {
+private fun TopBarWithUndoRedo() {
     LivingPicturesTheme {
         val uiState = remember {
             mutableStateOf(

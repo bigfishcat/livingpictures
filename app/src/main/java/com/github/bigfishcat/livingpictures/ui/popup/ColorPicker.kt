@@ -31,9 +31,7 @@ import com.github.bigfishcat.livingpictures.ui.theme.Red
 import com.github.bigfishcat.livingpictures.ui.theme.White
 
 @Composable
-fun PaletteColorPicker(
-    action: (Intent) -> Unit = {}
-) {
+fun PaletteColorPicker(action: (Intent) -> Unit = {}) {
     Popup(
         alignment = Alignment.BottomCenter,
         offset = IntOffset(0, -108), // todo calculate bottom padding
@@ -45,32 +43,25 @@ fun PaletteColorPicker(
 
 @Composable
 private fun PaletteColorPickerContent(action: (Intent) -> Unit) {
-    Card(
-        modifier = Modifier
-            .background(PopupBackground),
-        shape = RoundedCornerShape(4.dp),
-        border = BorderStroke(1.dp, PopupStroke)
-    ) {
-        Row(modifier = Modifier.padding(16.dp)) {
-            IconButton(
-                onClick = { action(Intent.ShowWheelColorPicker) }
-            ) {
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.palette),
-                    contentDescription = stringResource(id = R.string.palette)
-                )
-            }
+    PopupContentContainer {
+        IconButton(
+            onClick = { action(Intent.ShowWheelColorPicker) }
+        ) {
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.palette),
+                contentDescription = stringResource(id = R.string.palette)
+            )
+        }
 
-            listOf(White, Black, Red, Blue).forEach { color ->
-                IconButton(
-                    onClick = { action(Intent.SelectColor(color)) }
-                ) {
-                    Canvas(modifier = Modifier.size(32.dp)) {
-                        drawCircle(
-                            color = color,
-                            radius = size.minDimension / 2.5f
-                        )
-                    }
+        listOf(White, Black, Red, Blue).forEach { color ->
+            IconButton(
+                onClick = { action(Intent.SelectColor(color)) }
+            ) {
+                Canvas(modifier = Modifier.size(32.dp)) {
+                    drawCircle(
+                        color = color,
+                        radius = size.minDimension / 2.5f
+                    )
                 }
             }
         }
@@ -86,7 +77,7 @@ fun WheelColorPicker(
 
 @Preview
 @Composable
-fun DefaultPaletteColorPickerContent() {
+private fun DefaultPaletteColorPickerContent() {
     LivingPicturesTheme {
         PaletteColorPickerContent {}
     }

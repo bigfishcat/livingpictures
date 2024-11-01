@@ -24,7 +24,7 @@ fun DrawingPage(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-fun DefaultDrawingPage() {
+private fun DefaultDrawingPage() {
     LivingPicturesTheme {
         DrawingPage()
     }
