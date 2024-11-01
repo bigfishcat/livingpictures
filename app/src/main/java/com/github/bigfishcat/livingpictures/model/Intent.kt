@@ -28,4 +28,6 @@ sealed interface Intent {
     data object CreatePage : Intent
 
     data object HidePopup : Intent
+
+    data object Share : Intent
 }

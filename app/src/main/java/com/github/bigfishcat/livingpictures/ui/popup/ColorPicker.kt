@@ -1,14 +1,8 @@
 package com.github.bigfishcat.livingpictures.ui.popup
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,8 +19,6 @@ import com.github.bigfishcat.livingpictures.model.Intent
 import com.github.bigfishcat.livingpictures.ui.theme.Black
 import com.github.bigfishcat.livingpictures.ui.theme.Blue
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
-import com.github.bigfishcat.livingpictures.ui.theme.PopupBackground
-import com.github.bigfishcat.livingpictures.ui.theme.PopupStroke
 import com.github.bigfishcat.livingpictures.ui.theme.Red
 import com.github.bigfishcat.livingpictures.ui.theme.White
 
