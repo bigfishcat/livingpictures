@@ -16,6 +16,7 @@ import com.github.bigfishcat.livingpictures.model.handleAction
 import com.github.bigfishcat.livingpictures.model.AppUiState
 import com.github.bigfishcat.livingpictures.model.BottomBarUiState
 import com.github.bigfishcat.livingpictures.model.Intent
+import com.github.bigfishcat.livingpictures.model.PageUiState
 import com.github.bigfishcat.livingpictures.model.PopupShown
 import com.github.bigfishcat.livingpictures.model.TopBarUiState
 import com.github.bigfishcat.livingpictures.model.createBottomBarState
@@ -52,6 +53,9 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
         topBarState.value = uiState.createTopBarUiState()
     }
 
+    fun updatePage(pageUiState: PageUiState) =
+        updateState(appState.value.copy(currentPageState = pageUiState))
+
     fun handleAction(intent: Intent) =
         handleAction(intent, appState.value, pagesRepository, ::updateState)
 
@@ -66,7 +70,11 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
             DrawingPage(
                 modifier = modifier
                     .padding(innerPadding)
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                pageUiState = appState.value.currentPageState,
+                selectedInstrument = appState.value.instrument,
+                color = appState.value.color,
+                ::updatePage
             )
 
             when (appState.value.popupShown) {
