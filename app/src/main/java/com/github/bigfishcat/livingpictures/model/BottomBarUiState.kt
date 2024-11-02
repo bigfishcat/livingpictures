@@ -18,7 +18,11 @@ enum class BottomItem {
 
 fun AppUiState.createBottomBarState(): BottomBarUiState {
     val selectedItem = when (popupShown) {
-        PopupShown.PagesPreview, PopupShown.ExportToGif, PopupShown.None -> {
+        PopupShown.PaletteColorPicker -> BottomItem.Color
+        PopupShown.WheelColorPicker -> BottomItem.Color
+        PopupShown.FiguresPicker -> BottomItem.Figures
+
+        else -> {
             when (instrument) {
                 Instrument.Pencil -> BottomItem.Pencil
                 Instrument.Brush -> BottomItem.Brush
@@ -29,15 +33,11 @@ fun AppUiState.createBottomBarState(): BottomBarUiState {
                 Instrument.Arrow -> BottomItem.Figures
             }
         }
-
-        PopupShown.PaletteColorPicker -> BottomItem.Color
-        PopupShown.WheelColorPicker -> BottomItem.Color
-        PopupShown.FiguresPicker -> BottomItem.Figures
     }
 
     return BottomBarUiState(
         color = color,
         selectedItem = selectedItem,
-        enabled = !playbackInProgress && popupShown != PopupShown.ExportToGif
+        enabled = !playbackInProgress && popupShown != PopupShown.ExportToGif && popupShown != PopupShown.LongProgress
     )
 }

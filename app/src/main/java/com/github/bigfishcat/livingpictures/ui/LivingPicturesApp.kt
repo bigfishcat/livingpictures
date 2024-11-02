@@ -2,6 +2,7 @@ package com.github.bigfishcat.livingpictures.ui
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -36,6 +37,7 @@ import com.github.bigfishcat.livingpictures.ui.bar.BottomBar
 import com.github.bigfishcat.livingpictures.ui.bar.TopBar
 import com.github.bigfishcat.livingpictures.ui.popup.ExportToGifPopup
 import com.github.bigfishcat.livingpictures.ui.popup.FigurePicker
+import com.github.bigfishcat.livingpictures.ui.popup.LongProgressPopup
 import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
 import com.github.bigfishcat.livingpictures.ui.theme.Background
@@ -101,6 +103,7 @@ fun LivingPicturesApp(
     fun handleAction(intent: Intent) =
         coroutineScope.handleAction(
             intent = intent,
+            context = context,
             appState = appState.value,
             pagesRepository = pagesRepository,
             canvasSize = canvasSize.value,
@@ -109,7 +112,7 @@ fun LivingPicturesApp(
 
     suspend fun drawToBitmap(page: PageUiState): ImageBitmap? {
         val size = canvasSize.value
-        if (size.isEmpty() || page.objects.isEmpty()) {
+        if (size.isEmpty()) {
             return null
         }
         return bitmapFactory.drawToBitmap(page, canvasBackground.value, size)
@@ -165,6 +168,14 @@ fun LivingPicturesApp(
                     ::handleAction
                 )
                 PopupShown.ExportToGif -> ExportToGifPopup(::exportToGif, ::handleAction)
+                PopupShown.LongProgress -> LongProgressPopup()
+            }
+
+            BackHandler(enabled = appState.value.popupShown != PopupShown.None) {
+                when (appState.value.popupShown) {
+                    PopupShown.LongProgress -> {}
+                    else -> updateState(appState.value.copy(popupShown = PopupShown.None))
+                }
             }
 
             LaunchedEffect(playbackInProgress.value) {
