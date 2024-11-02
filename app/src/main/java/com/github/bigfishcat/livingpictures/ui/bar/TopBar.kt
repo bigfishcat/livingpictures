@@ -79,6 +79,17 @@ fun TopBar(
         }
 
         IconButton(
+            onClick = { action(Intent.CopyPage) },
+            enabled = state.canUndo && state.enabled
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.copy),
+                contentDescription = stringResource(id = R.string.copy_page),
+                colorFilter = if(!state.canUndo || !state.enabled) ColorFilter.tint(Inactive) else null
+            )
+        }
+
+        IconButton(
             onClick = { action(Intent.ShowPagesPreview) },
             enabled = !state.playbackInProgress && state.enabled
         ) {

@@ -4,6 +4,7 @@
     <string name="redo">Redo</string>
     <string name="bin">Remove page</string>
     <string name="add_page">Add new page</string>
+    <string name="copy_page">Copy page</string>
     <string name="all">List of pages</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
@@ -21,4 +22,9 @@
     <string name="done">Done</string>
     <string name="share_title">Share animated Gif</string>
     <string name="share_failed">Failed to share animated Gif</string>
+    <string name="delete_all">Delete all pages</string>
+    <string name="generate_pages">Generate random pages</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="count">Number of pages</string>
 </resources>

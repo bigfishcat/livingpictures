@@ -24,6 +24,20 @@ class PagesRepository internal constructor(
         return page
     }
 
+    fun clone(page: PageUiState): PageUiState {
+        val pageIndex = getPageIndex(page)
+        val newPage = PageUiState(objects = page.objects)
+        if (pageIndex < 0) {
+            Log.e("PAGES_REPOSITORY", "Page with id=${page.id} not found in repository")
+            _pages += newPage
+        } else if (pageIndex == pages.lastIndex) {
+            _pages += newPage
+        } else {
+            _pages.add(pageIndex + 1, newPage)
+        }
+        return newPage
+    }
+
     fun update(page: PageUiState) {
         val pageIndex = getPageIndex(page)
         if (pageIndex < 0) {
@@ -49,6 +63,12 @@ class PagesRepository internal constructor(
         } else {
             pages[pageIndex]
         }
+    }
+
+    fun removeAll(): PageUiState {
+        _pages.clear()
+        _pages += PageUiState()
+        return lastPage
     }
 
     private fun getPageIndex(page: PageUiState): Int {
