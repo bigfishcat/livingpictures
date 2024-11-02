@@ -1,6 +1,7 @@
 package com.github.bigfishcat.livingpictures.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -33,6 +35,7 @@ import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
 import com.github.bigfishcat.livingpictures.ui.theme.Background
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 
 @Composable
 fun LivingPicturesApp(
@@ -60,6 +63,10 @@ fun LivingPicturesApp(
         mutableStateOf(appState.value.createBottomBarState())
     }
 
+    val playbackInProgress = remember {
+        mutableStateOf(appState.value.playbackInProgress)
+    }
+
     val canvasSize = remember {
         mutableStateOf(Size.Zero)
     }
@@ -74,6 +81,7 @@ fun LivingPicturesApp(
         appState.value = uiState
         bottomBarState.value = uiState.createBottomBarState()
         topBarState.value = uiState.createTopBarUiState()
+        playbackInProgress.value = uiState.playbackInProgress
     }
 
     fun updatePage(pageUiState: PageUiState) {
@@ -123,6 +131,28 @@ fun LivingPicturesApp(
                     ::drawToBitmap,
                     ::handleAction
                 )
+            }
+
+            LaunchedEffect(playbackInProgress.value) {
+                if (!playbackInProgress.value) {
+                    updatePage(pagesRepository.lastPage)
+                    return@LaunchedEffect
+                }
+
+                var iterator = pagesRepository.pages.iterator()
+                if (!iterator.hasNext()) {
+                    Log.e("PLAYBACK", "Nothing to playback")
+                    updateState(uiState = appState.value.copy(playbackInProgress = false))
+                }
+
+                while (playbackInProgress.value) {
+                    if (iterator.hasNext()) {
+                        updatePage(iterator.next())
+                        delay(2000L)
+                    } else {
+                        iterator = pagesRepository.pages.iterator()
+                    }
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 data class BottomBarUiState(
     val color: Color = Color.Blue,
     val selectedItem: BottomItem = BottomItem.Pencil,
+    val enabled: Boolean = true
 )
 
 enum class BottomItem {
@@ -34,5 +35,5 @@ fun AppUiState.createBottomBarState(): BottomBarUiState {
         PopupShown.FiguresPicker -> BottomItem.Figures
     }
 
-    return BottomBarUiState(color, selectedItem)
+    return BottomBarUiState(color, selectedItem, !playbackInProgress)
 }

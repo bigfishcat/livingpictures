@@ -11,12 +11,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.bigfishcat.livingpictures.R
 import com.github.bigfishcat.livingpictures.model.Intent
 import com.github.bigfishcat.livingpictures.model.TopBarUiState
+import com.github.bigfishcat.livingpictures.ui.theme.Inactive
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 
 @Composable
@@ -52,24 +54,36 @@ fun TopBar(
 
         Spacer(modifier = modifier.weight(weight = 1.0f))
 
-        IconButton(onClick = { action(Intent.DeletePage) }) {
+        IconButton(
+            onClick = { action(Intent.DeletePage) },
+            enabled = !uiState.value.playbackInProgress
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.bin),
-                contentDescription = stringResource(id = R.string.bin)
+                contentDescription = stringResource(id = R.string.bin),
+                colorFilter = if(uiState.value.playbackInProgress) ColorFilter.tint(Inactive) else null
             )
         }
 
-        IconButton(onClick = { action(Intent.CreatePage) }) {
+        IconButton(
+            onClick = { action(Intent.CreatePage) },
+            enabled = !uiState.value.playbackInProgress
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.resource_new),
-                contentDescription = stringResource(id = R.string.add_page)
+                contentDescription = stringResource(id = R.string.add_page),
+                colorFilter = if(uiState.value.playbackInProgress) ColorFilter.tint(Inactive) else null
             )
         }
 
-        IconButton(onClick = { action(Intent.ShowPagesPreview) }) {
+        IconButton(
+            onClick = { action(Intent.ShowPagesPreview) },
+            enabled = !uiState.value.playbackInProgress
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.layers),
-                contentDescription = stringResource(id = R.string.all)
+                contentDescription = stringResource(id = R.string.all),
+                colorFilter = if(uiState.value.playbackInProgress) ColorFilter.tint(Inactive) else null
             )
         }
 

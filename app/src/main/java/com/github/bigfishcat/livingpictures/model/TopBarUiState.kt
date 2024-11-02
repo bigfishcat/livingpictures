@@ -7,7 +7,7 @@ data class TopBarUiState(
 )
 
 fun AppUiState.createTopBarUiState() = TopBarUiState(
-    canUndo = currentPageState.objects.isNotEmpty(),
-    canRedo = currentPageState.undoObjects.isNotEmpty(),
+    canUndo = !playbackInProgress && currentPageState.objects.isNotEmpty(),
+    canRedo = !playbackInProgress && currentPageState.undoObjects.isNotEmpty(),
     playbackInProgress = playbackInProgress
 )
