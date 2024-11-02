@@ -17,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
@@ -25,7 +24,7 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.bigfishcat.livingpictures.R
@@ -81,7 +80,7 @@ fun DrawingPage(
 
     Box(modifier = modifier.padding(6.dp)) {
         Image(
-            bitmap = ImageBitmap.imageResource(R.drawable.background),
+            painter = painterResource(id = R.drawable.background),
             modifier = Modifier.fillMaxSize(),
             contentDescription = null,
             contentScale = ContentScale.FillBounds
