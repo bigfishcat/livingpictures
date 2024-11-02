@@ -19,7 +19,7 @@ enum class BottomItem {
 fun AppUiState.createBottomBarState(): BottomBarUiState {
     val selectedItem = when (popupShown) {
         PopupShown.PaletteColorPicker -> BottomItem.Color
-        PopupShown.WheelColorPicker -> BottomItem.Color
+        PopupShown.HueColorPicker -> BottomItem.Color
         PopupShown.FiguresPicker -> BottomItem.Figures
 
         else -> {

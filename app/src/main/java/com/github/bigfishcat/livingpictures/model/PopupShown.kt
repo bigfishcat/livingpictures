@@ -3,7 +3,7 @@ package com.github.bigfishcat.livingpictures.model
 enum class PopupShown {
     None,
     PaletteColorPicker,
-    WheelColorPicker,
+    HueColorPicker,
     FiguresPicker,
     PagesPreview,
     ExportToGif,
