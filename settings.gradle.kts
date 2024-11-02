@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "LivingPictures"
 include(":app")
- 
+include(":gifencoder")

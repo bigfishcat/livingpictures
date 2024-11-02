@@ -15,11 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.toSize
 import com.github.bigfishcat.livingpictures.R
 import com.github.bigfishcat.livingpictures.domain.BitmapFactory
+import com.github.bigfishcat.livingpictures.domain.GifGenerator
 import com.github.bigfishcat.livingpictures.domain.PagesRepository
 import com.github.bigfishcat.livingpictures.model.AppUiState
 import com.github.bigfishcat.livingpictures.model.Intent
@@ -30,21 +32,24 @@ import com.github.bigfishcat.livingpictures.model.createTopBarUiState
 import com.github.bigfishcat.livingpictures.model.handleAction
 import com.github.bigfishcat.livingpictures.ui.bar.BottomBar
 import com.github.bigfishcat.livingpictures.ui.bar.TopBar
+import com.github.bigfishcat.livingpictures.ui.popup.ExportToGifPopup
 import com.github.bigfishcat.livingpictures.ui.popup.FigurePicker
 import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
 import com.github.bigfishcat.livingpictures.ui.theme.Background
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 
 @Composable
 fun LivingPicturesApp(
     context: Context,
-    coroutineScope: CoroutineScope,
     modifier: Modifier = Modifier
 ) {
     val pagesRepository = remember {
-        PagesRepository(context, coroutineScope)
+        PagesRepository()
+    }
+
+    val gifGenerator = remember {
+        GifGenerator(context)
     }
 
     val bitmapFactory = remember {
@@ -100,6 +105,22 @@ fun LivingPicturesApp(
         return bitmapFactory.drawToBitmap(page, canvasBackground.value, size)
     }
 
+    suspend fun exportToGif(progress: (Float) -> Unit) {
+        val pages = pagesRepository.pages
+
+        var index = 0
+        progress.invoke(0f)
+
+        val file = gifGenerator.saveToFile(pages, 2000) { page ->
+            drawToBitmap(page).also {
+                index++
+                progress.invoke((index.toFloat() / pages.size).coerceAtMost(1f))
+            }?.asAndroidBitmap()
+        }
+
+        Log.d("EXPORT", "Export to file ${file.canonicalPath}")
+    }
+
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
             modifier = modifier
@@ -131,6 +152,7 @@ fun LivingPicturesApp(
                     ::drawToBitmap,
                     ::handleAction
                 )
+                PopupShown.ExportToGif -> ExportToGifPopup(::exportToGif, ::handleAction)
             }
 
             LaunchedEffect(playbackInProgress.value) {

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
 import com.github.bigfishcat.livingpictures.ui.LivingPicturesApp
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 
@@ -20,7 +19,6 @@ class MainActivity : ComponentActivity() {
             LivingPicturesTheme {
                 LivingPicturesApp(
                     context = this,
-                    coroutineScope = lifecycleScope,
                     modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars)
                 )
             }

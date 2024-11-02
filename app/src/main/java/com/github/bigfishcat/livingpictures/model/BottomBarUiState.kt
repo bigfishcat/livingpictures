@@ -18,7 +18,7 @@ enum class BottomItem {
 
 fun AppUiState.createBottomBarState(): BottomBarUiState {
     val selectedItem = when (popupShown) {
-        PopupShown.PagesPreview, PopupShown.None -> {
+        PopupShown.PagesPreview, PopupShown.ExportToGif, PopupShown.None -> {
             when (instrument) {
                 Instrument.Pencil -> BottomItem.Pencil
                 Instrument.Brush -> BottomItem.Brush
