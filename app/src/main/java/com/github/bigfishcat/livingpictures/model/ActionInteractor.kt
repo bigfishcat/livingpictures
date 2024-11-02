@@ -13,6 +13,7 @@ fun handleAction(
         Intent.HidePopup -> {
             updateAppState.invoke(state)
         }
+
         Intent.CreatePage -> {
             pagesRepository.push(state.currentPageState)
             updateAppState.invoke(state.copy(currentPageState = PageUiState()))

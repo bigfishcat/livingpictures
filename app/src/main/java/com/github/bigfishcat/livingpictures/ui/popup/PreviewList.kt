@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -61,6 +62,7 @@ fun PreviewListWithButtons(
     action: (Intent) -> Unit = {}
 ) {
     Card(
+        modifier = Modifier.shadow(1.dp),
         shape = RoundedCornerShape(4.dp),
         border = BorderStroke(1.dp, PopupStroke),
         colors = CardColors(Background, Background, Background, Background)
