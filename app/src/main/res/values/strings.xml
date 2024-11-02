@@ -19,4 +19,6 @@
     <string name="arrow">Arrow</string>
     <string name="share">Share</string>
     <string name="done">Done</string>
+    <string name="share_title">Share animated Gif</string>
+    <string name="share_failed">Failed to share animated Gif</string>
 </resources>

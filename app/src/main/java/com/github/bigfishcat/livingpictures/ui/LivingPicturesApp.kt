@@ -23,6 +23,7 @@ import com.github.bigfishcat.livingpictures.R
 import com.github.bigfishcat.livingpictures.domain.BitmapFactory
 import com.github.bigfishcat.livingpictures.domain.GifGenerator
 import com.github.bigfishcat.livingpictures.domain.PagesRepository
+import com.github.bigfishcat.livingpictures.domain.shareFile
 import com.github.bigfishcat.livingpictures.model.AppUiState
 import com.github.bigfishcat.livingpictures.model.Intent
 import com.github.bigfishcat.livingpictures.model.PageUiState
@@ -119,6 +120,7 @@ fun LivingPicturesApp(
         }
 
         Log.d("EXPORT", "Export to file ${file.canonicalPath}")
+        context.shareFile(file)
     }
 
     Surface(color = MaterialTheme.colorScheme.background) {
