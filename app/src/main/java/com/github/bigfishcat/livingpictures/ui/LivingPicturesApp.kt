@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
@@ -83,6 +84,8 @@ fun LivingPicturesApp(
         }
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
     fun updateState(uiState: AppUiState) {
         appState.value = uiState
         bottomBarState.value = uiState.createBottomBarState()
@@ -96,7 +99,13 @@ fun LivingPicturesApp(
     }
 
     fun handleAction(intent: Intent) =
-        handleAction(intent, appState.value, pagesRepository, ::updateState)
+        coroutineScope.handleAction(
+            intent = intent,
+            appState = appState.value,
+            pagesRepository = pagesRepository,
+            canvasSize = canvasSize.value,
+            updateAppState = ::updateState
+        )
 
     suspend fun drawToBitmap(page: PageUiState): ImageBitmap? {
         val size = canvasSize.value

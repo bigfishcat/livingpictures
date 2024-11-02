@@ -1,11 +1,16 @@
 package com.github.bigfishcat.livingpictures.model
 
+import androidx.compose.ui.geometry.Size
 import com.github.bigfishcat.livingpictures.domain.PagesRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-fun handleAction(
+fun CoroutineScope.handleAction(
     intent: Intent,
     appState: AppUiState,
     pagesRepository: PagesRepository,
+    canvasSize: Size,
     updateAppState: (AppUiState) -> Unit
 ) {
     val state = appState.copy(popupShown = PopupShown.None)
@@ -18,9 +23,33 @@ fun handleAction(
             updateAppState.invoke(state.copy(currentPageState = pagesRepository.create()))
         }
 
+        Intent.CopyPage -> {
+            updateAppState.invoke(state.copy(currentPageState = pagesRepository.clone(state.currentPageState)))
+        }
+
         Intent.DeletePage -> {
-            val pageState = pagesRepository.remove(state.currentPageState)
-            updateAppState.invoke(state.copy(currentPageState = pageState))
+            updateAppState.invoke(state.copy(currentPageState = pagesRepository.remove(state.currentPageState)))
+        }
+
+        Intent.DeleteAll -> {
+            updateAppState.invoke(state.copy(currentPageState = pagesRepository.removeAll()))
+        }
+
+        is Intent.SelectPage -> {
+            updateAppState.invoke(state.copy(currentPageState = intent.page))
+        }
+
+        is Intent.GeneratePages -> {
+            launch {
+                for (i in 0 until intent.count) {
+                    val page = pagesRepository.create().copy(
+                        objects = generateRandomObjects(canvasSize)
+                    )
+                    pagesRepository.update(page)
+                    updateAppState.invoke(state.copy(currentPageState = page))
+                    delay(30)
+                }
+            }
         }
 
         Intent.Pause -> {

@@ -25,7 +25,15 @@ sealed interface Intent {
 
     data object DeletePage : Intent
 
+    data object DeleteAll : Intent
+
     data object CreatePage : Intent
+
+    data object CopyPage : Intent
+
+    data class SelectPage(val page: PageUiState) : Intent
+
+    data class GeneratePages(val count: Int) : Intent
 
     data object HidePopup : Intent
 
