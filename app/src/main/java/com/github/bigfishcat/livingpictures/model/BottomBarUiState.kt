@@ -35,5 +35,9 @@ fun AppUiState.createBottomBarState(): BottomBarUiState {
         PopupShown.FiguresPicker -> BottomItem.Figures
     }
 
-    return BottomBarUiState(color, selectedItem, !playbackInProgress)
+    return BottomBarUiState(
+        color = color,
+        selectedItem = selectedItem,
+        enabled = !playbackInProgress && popupShown != PopupShown.ExportToGif
+    )
 }

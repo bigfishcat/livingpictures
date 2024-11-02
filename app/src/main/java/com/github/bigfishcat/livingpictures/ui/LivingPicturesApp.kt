@@ -112,15 +112,15 @@ fun LivingPicturesApp(
         var index = 0
         progress.invoke(0f)
 
-        val file = gifGenerator.saveToFile(pages, 2000) { page ->
+        gifGenerator.saveToFile(pages, 2000) { page ->
             drawToBitmap(page).also {
                 index++
                 progress.invoke((index.toFloat() / pages.size).coerceAtMost(1f))
             }?.asAndroidBitmap()
+        }?.let { file ->
+            Log.d("EXPORT", "Export to file ${file.canonicalPath}")
+            context.shareFile(file)
         }
-
-        Log.d("EXPORT", "Export to file ${file.canonicalPath}")
-        context.shareFile(file)
     }
 
     Surface(color = MaterialTheme.colorScheme.background) {
@@ -141,6 +141,7 @@ fun LivingPicturesApp(
                 pageUiState = appState.value.currentPageState,
                 selectedInstrument = appState.value.instrument,
                 color = appState.value.color,
+                enabled = !playbackInProgress.value && appState.value.popupShown != PopupShown.ExportToGif,
                 ::updatePage
             )
 

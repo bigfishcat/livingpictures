@@ -27,14 +27,16 @@ fun TopBar(
     modifier: Modifier = Modifier,
     action: (Intent) -> Unit = {}
 ) {
+    val state = uiState.value
+
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         IconButton(
             onClick = { action(Intent.Undo) },
-            enabled = uiState.value.canUndo
+            enabled = state.canUndo && state.enabled
         ) {
             Image(
                 painter = painterResource(
-                    id = if (uiState.value.canUndo) R.drawable.undo_active else R.drawable.undo_inactive
+                    id = if (state.canUndo && state.enabled) R.drawable.undo_active else R.drawable.undo_inactive
                 ),
                 contentDescription = stringResource(id = R.string.undo)
             )
@@ -42,11 +44,11 @@ fun TopBar(
 
         IconButton(
             onClick = { action(Intent.Redo) },
-            enabled = uiState.value.canRedo
+            enabled = state.canRedo && state.enabled
         ) {
             Image(
                 painter = painterResource(
-                    id = if (uiState.value.canRedo) R.drawable.redo_active else R.drawable.redo_inactive
+                    id = if (state.canRedo && state.enabled) R.drawable.redo_active else R.drawable.redo_inactive
                 ),
                 contentDescription = stringResource(id = R.string.redo)
             )
@@ -56,34 +58,34 @@ fun TopBar(
 
         IconButton(
             onClick = { action(Intent.DeletePage) },
-            enabled = !uiState.value.playbackInProgress
+            enabled = !state.playbackInProgress && state.enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.bin),
                 contentDescription = stringResource(id = R.string.bin),
-                colorFilter = if(uiState.value.playbackInProgress) ColorFilter.tint(Inactive) else null
+                colorFilter = if(state.playbackInProgress || !state.enabled) ColorFilter.tint(Inactive) else null
             )
         }
 
         IconButton(
             onClick = { action(Intent.CreatePage) },
-            enabled = !uiState.value.playbackInProgress
+            enabled = !state.playbackInProgress && state.enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.resource_new),
                 contentDescription = stringResource(id = R.string.add_page),
-                colorFilter = if(uiState.value.playbackInProgress) ColorFilter.tint(Inactive) else null
+                colorFilter = if(state.playbackInProgress || !state.enabled) ColorFilter.tint(Inactive) else null
             )
         }
 
         IconButton(
             onClick = { action(Intent.ShowPagesPreview) },
-            enabled = !uiState.value.playbackInProgress
+            enabled = !state.playbackInProgress && state.enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.layers),
                 contentDescription = stringResource(id = R.string.all),
-                colorFilter = if(uiState.value.playbackInProgress) ColorFilter.tint(Inactive) else null
+                colorFilter = if(state.playbackInProgress || !state.enabled) ColorFilter.tint(Inactive) else null
             )
         }
 
@@ -91,11 +93,11 @@ fun TopBar(
 
         IconButton(
             onClick = { action(Intent.Pause) },
-            enabled = uiState.value.playbackInProgress
+            enabled = state.playbackInProgress && state.enabled
         ) {
             Image(
                 painter = painterResource(
-                    id = if (uiState.value.playbackInProgress) R.drawable.pause_active else R.drawable.pause_inactive
+                    id = if (state.playbackInProgress && state.enabled) R.drawable.pause_active else R.drawable.pause_inactive
                 ),
                 contentDescription = stringResource(id = R.string.play)
             )
@@ -103,11 +105,11 @@ fun TopBar(
 
         IconButton(
             onClick = { action(Intent.Play) },
-            enabled = !uiState.value.playbackInProgress
+            enabled = !state.playbackInProgress && state.enabled
         ) {
             Image(
                 painter = painterResource(
-                    id = if (uiState.value.playbackInProgress) R.drawable.play_inactive else R.drawable.play_active
+                    id = if (state.playbackInProgress || !state.enabled) R.drawable.play_inactive else R.drawable.play_active
                 ),
                 contentDescription = stringResource(id = R.string.pause)
             )

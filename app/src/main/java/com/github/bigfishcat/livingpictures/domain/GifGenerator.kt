@@ -2,6 +2,7 @@ package com.github.bigfishcat.livingpictures.domain
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import com.github.bigfishcat.livingpictures.model.PageUiState
 import com.mlapadula.gifencoder.GifEncoder
 import kotlinx.coroutines.Dispatchers
@@ -18,22 +19,27 @@ class GifGenerator(context: Context) {
         pages: List<PageUiState>,
         delayMs: Int,
         bitmapFactory: suspend (PageUiState) -> Bitmap?
-    ) : File {
+    ): File? {
         return withContext(Dispatchers.IO) {
-            val gifEncoder = GifEncoder()
-            val gifFile = File(cacheFolder, "${UUID.randomUUID()}.gif")
+            try {
+                val gifEncoder = GifEncoder()
+                val gifFile = File(cacheFolder, "${UUID.randomUUID()}.gif")
 
-            gifEncoder.start(gifFile.canonicalPath)
-            gifEncoder.setDelay(delayMs)
+                gifEncoder.start(gifFile.canonicalPath)
+                gifEncoder.setDelay(delayMs)
 
-            pages.forEach { page ->
-                bitmapFactory.invoke(page)?.let {
-                    gifEncoder.addFrame(it)
+                pages.forEach { page ->
+                    bitmapFactory.invoke(page)?.let {
+                        gifEncoder.addFrame(it)
+                    }
                 }
-            }
 
-            gifEncoder.finish()
-            gifFile
+                gifEncoder.finish()
+                gifFile
+            } catch (e: Exception) {
+                Log.e("EXPORT", "Failed to export images to gif", e)
+                null
+            }
         }
     }
 }

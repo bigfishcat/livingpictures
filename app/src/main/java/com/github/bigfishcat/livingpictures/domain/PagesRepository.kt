@@ -3,8 +3,9 @@ package com.github.bigfishcat.livingpictures.domain
 import android.util.Log
 import com.github.bigfishcat.livingpictures.model.PageUiState
 
-class PagesRepository {
-    private val _pages = mutableListOf(PageUiState())
+class PagesRepository internal constructor(
+    private val _pages: MutableList<PageUiState>
+) {
     val pages: List<PageUiState> = _pages
 
     val lastPage: PageUiState
@@ -14,6 +15,8 @@ class PagesRepository {
             }
             return pages.last()
         }
+
+    constructor() : this(mutableListOf(PageUiState()))
 
     fun create(): PageUiState {
         val page = PageUiState()

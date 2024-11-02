@@ -42,6 +42,7 @@ fun DrawingPage(
     pageUiState: PageUiState,
     selectedInstrument: Instrument,
     color: Color,
+    enabled: Boolean,
     updatePageState: (PageUiState) -> Unit = {}
 ) {
     var motionType by remember {
@@ -78,6 +79,47 @@ fun DrawingPage(
         if (pointer.pressed != pointer.previousPressed) pointer.consume()
     }
 
+    fun handleMotion() {
+        when (motionType) {
+            MotionType.Down -> {
+                if (selectedInstrument.canDraw) {
+                    currentPath.moveTo(currentPosition.x, currentPosition.y)
+                }
+
+                previousPosition = currentPosition
+            }
+
+            MotionType.Move -> {
+                if (selectedInstrument.canDraw) {
+                    currentPath.quadraticTo(
+                        previousPosition.x,
+                        previousPosition.y,
+                        (previousPosition.x + currentPosition.x) / 2,
+                        (previousPosition.y + currentPosition.y) / 2
+                    )
+                }
+
+                previousPosition = currentPosition
+            }
+
+            MotionType.Up -> {
+                if (selectedInstrument.canDraw) {
+                    currentPath.lineTo(currentPosition.x, currentPosition.y)
+                    updatePageState.invoke(
+                        pageUiState.addObject(selectedInstrument, color, currentPath)
+                    )
+                    currentPath = Path()
+                }
+
+                currentPosition = Offset.Unspecified
+                previousPosition = currentPosition
+                motionType = MotionType.Idle
+            }
+
+            else -> Unit
+        }
+    }
+
     Box(modifier = modifier.padding(6.dp)) {
         Image(
             painter = painterResource(id = R.drawable.background),
@@ -94,50 +136,13 @@ fun DrawingPage(
                 }
             }
         ) {
-            when (motionType) {
-                MotionType.Down -> {
-                    if (selectedInstrument.canDraw) {
-                        currentPath.moveTo(currentPosition.x, currentPosition.y)
-                    }
-
-                    previousPosition = currentPosition
-                }
-
-                MotionType.Move -> {
-                    if (selectedInstrument.canDraw) {
-                        currentPath.quadraticTo(
-                            previousPosition.x,
-                            previousPosition.y,
-                            (previousPosition.x + currentPosition.x) / 2,
-                            (previousPosition.y + currentPosition.y) / 2
-                        )
-                    }
-
-                    previousPosition = currentPosition
-                }
-
-                MotionType.Up -> {
-                    if (selectedInstrument.canDraw) {
-                        currentPath.lineTo(currentPosition.x, currentPosition.y)
-                        updatePageState.invoke(
-                            pageUiState.addObject(selectedInstrument, color, currentPath)
-                        )
-                        currentPath = Path()
-                    }
-
-                    currentPosition = Offset.Unspecified
-                    previousPosition = currentPosition
-                    motionType = MotionType.Idle
-                }
-
-                else -> Unit
-            }
+            if (enabled) handleMotion()
 
             with(drawContext.canvas.nativeCanvas) {
                 val checkPoint = saveLayer(null, null)
                 pageUiState.objects.forEach { draw(it) }
 
-                if (motionType != MotionType.Idle && !currentPath.isEmpty) {
+                if (motionType != MotionType.Idle && !currentPath.isEmpty && enabled) {
                     when (selectedInstrument) {
                         Instrument.Eraser -> erase(currentPath)
                         Instrument.Pencil -> drawCurve(currentPath, color, 4f)
@@ -183,7 +188,8 @@ private fun DefaultDrawingPage() {
         DrawingPage(
             pageUiState = PageUiState(),
             selectedInstrument = Instrument.Pencil,
-            color = Color.Blue
+            color = Color.Blue,
+            enabled = false
         )
     }
 }
