@@ -63,6 +63,6 @@ fun handleAction(
             updateAppState.invoke(state.copy(popupShown = PopupShown.WheelColorPicker))
         }
 
-        Intent.Share -> TODO()
+        Intent.Share -> updateAppState.invoke(state.copy(popupShown = PopupShown.ExportToGif))
     }
 }

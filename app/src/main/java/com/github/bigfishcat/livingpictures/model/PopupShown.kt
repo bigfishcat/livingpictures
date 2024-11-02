@@ -5,5 +5,6 @@ enum class PopupShown {
     PaletteColorPicker,
     WheelColorPicker,
     FiguresPicker,
-    PagesPreview
+    PagesPreview,
+    ExportToGif
 }

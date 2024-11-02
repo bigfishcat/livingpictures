@@ -1,18 +1,9 @@
 package com.github.bigfishcat.livingpictures.domain
 
-import android.content.Context
 import android.util.Log
 import com.github.bigfishcat.livingpictures.model.PageUiState
-import kotlinx.coroutines.CoroutineScope
 
-class PagesRepository(
-    context: Context,
-    private val coroutineScope: CoroutineScope
-) {
-    private val bitmapStorage by lazy {
-        BitmapStorage(context)
-    }
-
+class PagesRepository {
     private val _pages = mutableListOf(PageUiState())
     val pages: List<PageUiState> = _pages
 
