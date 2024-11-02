@@ -7,9 +7,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -40,7 +39,7 @@ private fun PaletteColorPickerContent(action: (Intent) -> Unit) {
             onClick = { action(Intent.ShowWheelColorPicker) }
         ) {
             Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.palette),
+                painter = painterResource(id = R.drawable.palette),
                 contentDescription = stringResource(id = R.string.palette)
             )
         }

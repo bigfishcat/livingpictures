@@ -1,5 +1,6 @@
 package com.github.bigfishcat.livingpictures.ui
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,29 +11,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.toSize
+import com.github.bigfishcat.livingpictures.R
+import com.github.bigfishcat.livingpictures.domain.BitmapFactory
 import com.github.bigfishcat.livingpictures.domain.PagesRepository
-import com.github.bigfishcat.livingpictures.model.handleAction
 import com.github.bigfishcat.livingpictures.model.AppUiState
-import com.github.bigfishcat.livingpictures.model.BottomBarUiState
 import com.github.bigfishcat.livingpictures.model.Intent
 import com.github.bigfishcat.livingpictures.model.PageUiState
 import com.github.bigfishcat.livingpictures.model.PopupShown
-import com.github.bigfishcat.livingpictures.model.TopBarUiState
 import com.github.bigfishcat.livingpictures.model.createBottomBarState
 import com.github.bigfishcat.livingpictures.model.createTopBarUiState
+import com.github.bigfishcat.livingpictures.model.handleAction
 import com.github.bigfishcat.livingpictures.ui.bar.BottomBar
 import com.github.bigfishcat.livingpictures.ui.bar.TopBar
 import com.github.bigfishcat.livingpictures.ui.popup.FigurePicker
 import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
 import com.github.bigfishcat.livingpictures.ui.theme.Background
-import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun LivingPicturesApp(modifier: Modifier = Modifier) {
+fun LivingPicturesApp(
+    context: Context,
+    coroutineScope: CoroutineScope,
+    modifier: Modifier = Modifier
+) {
+    val pagesRepository = remember {
+        PagesRepository(context, coroutineScope)
+    }
+
+    val bitmapFactory = remember {
+        BitmapFactory()
+    }
+
     val appState = remember {
-        mutableStateOf(AppUiState())
+        mutableStateOf(AppUiState(currentPageState = pagesRepository.lastPage))
     }
 
     val topBarState = remember {
@@ -43,8 +60,14 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
         mutableStateOf(appState.value.createBottomBarState())
     }
 
-    val pagesRepository = remember {
-        PagesRepository()
+    val canvasSize = remember {
+        mutableStateOf(Size.Zero)
+    }
+
+    val canvasBackground = remember {
+        lazy {
+            ImageBitmap.imageResource(context.resources, R.drawable.background)
+        }
     }
 
     fun updateState(uiState: AppUiState) {
@@ -53,11 +76,21 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
         topBarState.value = uiState.createTopBarUiState()
     }
 
-    fun updatePage(pageUiState: PageUiState) =
+    fun updatePage(pageUiState: PageUiState) {
+        pagesRepository.update(pageUiState)
         updateState(appState.value.copy(currentPageState = pageUiState))
+    }
 
     fun handleAction(intent: Intent) =
         handleAction(intent, appState.value, pagesRepository, ::updateState)
+
+    suspend fun drawToBitmap(page: PageUiState): ImageBitmap? {
+        val size = canvasSize.value
+        if (size.isEmpty() || page.objects.isEmpty()) {
+            return null
+        }
+        return bitmapFactory.drawToBitmap(page, canvasBackground.value, size)
+    }
 
     Surface(color = MaterialTheme.colorScheme.background) {
         Scaffold(
@@ -70,7 +103,10 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
             DrawingPage(
                 modifier = modifier
                     .padding(innerPadding)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .onGloballyPositioned { coordinates ->
+                        canvasSize.value = coordinates.size.toSize()
+                    },
                 pageUiState = appState.value.currentPageState,
                 selectedInstrument = appState.value.instrument,
                 color = appState.value.color,
@@ -82,16 +118,12 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
                 PopupShown.PaletteColorPicker -> PaletteColorPicker(::handleAction)
                 PopupShown.WheelColorPicker -> TODO()
                 PopupShown.FiguresPicker -> FigurePicker(::handleAction)
-                PopupShown.PagesPreview -> PreviewListPopup(pagesRepository.pages, ::handleAction)
+                PopupShown.PagesPreview -> PreviewListPopup(
+                    pagesRepository.pages,
+                    ::drawToBitmap,
+                    ::handleAction
+                )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun DefaultLivingPicturesApp() {
-    LivingPicturesTheme(darkTheme = true) {
-        LivingPicturesApp()
     }
 }

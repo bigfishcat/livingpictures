@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.github.bigfishcat.livingpictures.ui.LivingPicturesApp
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 
@@ -17,7 +18,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LivingPicturesTheme {
-                LivingPicturesApp(Modifier.windowInsetsPadding(WindowInsets.systemBars))
+                LivingPicturesApp(
+                    context = this,
+                    coroutineScope = lifecycleScope,
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars)
+                )
             }
         }
     }

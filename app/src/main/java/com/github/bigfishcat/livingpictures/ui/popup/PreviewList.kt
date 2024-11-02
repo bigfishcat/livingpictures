@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,13 +23,17 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -42,9 +47,18 @@ import com.github.bigfishcat.livingpictures.ui.theme.Background
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 import com.github.bigfishcat.livingpictures.ui.theme.PopupStroke
 
+private sealed interface ImageState {
+    data object Loading : ImageState
+
+    data object Failed : ImageState
+
+    class Success(val painter: Painter) : ImageState
+}
+
 @Composable
 fun PreviewListPopup(
     pages: List<PageUiState>,
+    bitmapFactory: suspend (PageUiState) -> ImageBitmap?,
     action: (Intent) -> Unit = {}
 ) {
     Popup(
@@ -52,13 +66,14 @@ fun PreviewListPopup(
         offset = IntOffset(0, 0),
         onDismissRequest = { action(Intent.HidePopup) }
     ) {
-        PreviewListWithButtons(pages, action)
+        PreviewListWithButtons(pages, bitmapFactory, action)
     }
 }
 
 @Composable
 fun PreviewListWithButtons(
     pages: List<PageUiState>,
+    bitmapFactory: suspend (PageUiState) -> ImageBitmap?,
     action: (Intent) -> Unit = {}
 ) {
     Card(
@@ -68,7 +83,7 @@ fun PreviewListWithButtons(
         colors = CardColors(Background, Background, Background, Background)
     ) {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            PreviewList(Modifier.weight(1.0f), pages)
+            PreviewList(Modifier.weight(1.0f), pages, bitmapFactory)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -104,28 +119,79 @@ fun PreviewListWithButtons(
 @Composable
 fun PreviewList(
     modifier: Modifier = Modifier,
-    pages: List<PageUiState>
+    pages: List<PageUiState>,
+    bitmapFactory: suspend (PageUiState) -> ImageBitmap?
 ) {
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(2)
     ) {
         items(pages) { page ->
-            PagePreview(page)
+            PagePreview(page, bitmapFactory)
         }
     }
 }
 
 @Composable
-fun PagePreview(page: PageUiState) {
-    Image(
-        bitmap = ImageBitmap.imageResource(R.drawable.background),
-        contentDescription = null,
-        modifier = Modifier
-            .padding(6.dp)
-            .fillMaxWidth(),
-        contentScale = ContentScale.FillWidth
-    )
+fun PagePreview(page: PageUiState, bitmapFactory: suspend (PageUiState) -> ImageBitmap?) {
+    val state = loadBitmap(page, bitmapFactory)
+
+    when (val imageState = state.value) {
+        ImageState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .padding(6.dp)
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillWidth
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.loading),
+                    contentDescription = null,
+                    modifier =  Modifier.align(Alignment.Center)
+                )
+            }
+        }
+
+        ImageState.Failed -> {
+            Image(
+                painter = painterResource(id = R.drawable.background),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(6.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.FillWidth
+            )
+        }
+
+        is ImageState.Success -> {
+            Image(
+                painter = imageState.painter,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(6.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.FillWidth
+            )
+        }
+    }
+}
+
+@Composable
+private fun loadBitmap(
+    page: PageUiState,
+    bitmapFactory: suspend (PageUiState) -> ImageBitmap?
+): State<ImageState> {
+    return produceState<ImageState>(ImageState.Loading, page, bitmapFactory) {
+        bitmapFactory.invoke(page)?.let { bitmap ->
+            value = ImageState.Success(BitmapPainter(bitmap))
+        } ?: run {
+            value = ImageState.Failed
+        }
+    }
 }
 
 @Preview
@@ -140,7 +206,8 @@ fun DefaultPreviewList() {
                 PageUiState(),
                 PageUiState(),
                 PageUiState(),
-            )
+            ),
+            bitmapFactory = { null }
         )
     }
 }
@@ -153,7 +220,8 @@ fun DefaultPreviewListWithButtons() {
             pages = listOf(
                 PageUiState(),
                 PageUiState(),
-            )
+            ),
+            bitmapFactory = { null }
         )
     }
 }

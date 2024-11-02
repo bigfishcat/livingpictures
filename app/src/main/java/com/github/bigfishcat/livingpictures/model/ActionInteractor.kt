@@ -15,12 +15,11 @@ fun handleAction(
         }
 
         Intent.CreatePage -> {
-            pagesRepository.push(state.currentPageState)
-            updateAppState.invoke(state.copy(currentPageState = PageUiState()))
+            updateAppState.invoke(state.copy(currentPageState = pagesRepository.create()))
         }
 
         Intent.DeletePage -> {
-            val pageState = pagesRepository.pop() ?: PageUiState()
+            val pageState = pagesRepository.remove(state.currentPageState)
             updateAppState.invoke(state.copy(currentPageState = pageState))
         }
 
