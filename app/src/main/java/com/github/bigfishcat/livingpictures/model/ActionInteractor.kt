@@ -86,7 +86,7 @@ fun CoroutineScope.handleAction(
         }
 
         Intent.ShowWheelColorPicker -> {
-            updateAppState.invoke(state.copy(popupShown = PopupShown.WheelColorPicker))
+            updateAppState.invoke(state.copy(popupShown = PopupShown.HueColorPicker))
         }
 
         Intent.Share -> updateAppState.invoke(state.copy(popupShown = PopupShown.ExportToGif))

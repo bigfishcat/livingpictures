@@ -37,6 +37,7 @@ import com.github.bigfishcat.livingpictures.ui.bar.BottomBar
 import com.github.bigfishcat.livingpictures.ui.bar.TopBar
 import com.github.bigfishcat.livingpictures.ui.popup.ExportToGifPopup
 import com.github.bigfishcat.livingpictures.ui.popup.FigurePicker
+import com.github.bigfishcat.livingpictures.ui.popup.HueColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.LongProgressPopup
 import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
@@ -160,7 +161,7 @@ fun LivingPicturesApp(
             when (appState.value.popupShown) {
                 PopupShown.None -> {}
                 PopupShown.PaletteColorPicker -> PaletteColorPicker(::handleAction)
-                PopupShown.WheelColorPicker -> TODO()
+                PopupShown.HueColorPicker -> HueColorPicker(appState.value.color, ::handleAction)
                 PopupShown.FiguresPicker -> FigurePicker(::handleAction)
                 PopupShown.PagesPreview -> PreviewListPopup(
                     pagesRepository.pages,
