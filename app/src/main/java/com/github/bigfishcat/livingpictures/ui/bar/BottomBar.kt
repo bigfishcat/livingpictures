@@ -20,6 +20,7 @@ import com.github.bigfishcat.livingpictures.model.BottomBarUiState
 import com.github.bigfishcat.livingpictures.model.BottomItem
 import com.github.bigfishcat.livingpictures.model.Instrument
 import com.github.bigfishcat.livingpictures.model.Intent
+import com.github.bigfishcat.livingpictures.ui.theme.Inactive
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 import com.github.bigfishcat.livingpictures.ui.theme.Selected
 
@@ -30,50 +31,65 @@ fun BottomBar(
     action: (Intent) -> Unit = {}
 ) {
     val selectedItem = uiState.value.selectedItem
+    val enabled = uiState.value.enabled
+
+    fun colorFilter(item: BottomItem): ColorFilter? {
+        return when {
+            !enabled -> ColorFilter.tint(Inactive)
+            item == selectedItem -> ColorFilter.tint(Selected)
+            else -> null
+        }
+    }
+
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         IconButton(
-            onClick = { action(Intent.SelectInstrument(Instrument.Pencil)) }
+            onClick = { action(Intent.SelectInstrument(Instrument.Pencil)) },
+            enabled = enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.pencil),
                 contentDescription = stringResource(id = R.string.pencil),
-                colorFilter = if (selectedItem == BottomItem.Pencil) ColorFilter.tint(Selected) else null
+                colorFilter = colorFilter(BottomItem.Pencil)
             )
         }
         IconButton(
-            onClick = { action(Intent.SelectInstrument(Instrument.Brush)) }
+            onClick = { action(Intent.SelectInstrument(Instrument.Brush)) },
+            enabled = enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.brush),
                 contentDescription = stringResource(id = R.string.brush),
-                colorFilter = if (selectedItem == BottomItem.Brush) ColorFilter.tint(Selected) else null
+                colorFilter = colorFilter(BottomItem.Brush)
             )
         }
         IconButton(
-            onClick = { action(Intent.SelectInstrument(Instrument.Eraser)) }
+            onClick = { action(Intent.SelectInstrument(Instrument.Eraser)) },
+            enabled = enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.erase),
                 contentDescription = stringResource(id = R.string.eraser),
-                colorFilter = if (selectedItem == BottomItem.Eraser) ColorFilter.tint(Selected) else null
+                colorFilter = colorFilter(BottomItem.Eraser)
             )
         }
         IconButton(
-            onClick = { action(Intent.ShowFiguresPicker) }
+            onClick = { action(Intent.ShowFiguresPicker) },
+            enabled = enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.instruments),
                 contentDescription = stringResource(id = R.string.instruments),
-                colorFilter = if (selectedItem == BottomItem.Figures) ColorFilter.tint(Selected) else null
+                colorFilter = colorFilter(BottomItem.Figures)
             )
         }
         IconButton(
-            onClick = { action(Intent.ShowPaletteColorPicker) }
+            onClick = { action(Intent.ShowPaletteColorPicker) },
+            enabled = enabled
         ) {
             Image(
                 painter = painterResource(id = R.drawable.circle),
                 contentDescription = stringResource(id = R.string.color),
-                colorFilter = if (selectedItem == BottomItem.Color) ColorFilter.tint(Selected) else null,
+                colorFilter = colorFilter(BottomItem.Color),
                 modifier = Modifier.drawBehind {
                     drawCircle(
                         color = uiState.value.color,
