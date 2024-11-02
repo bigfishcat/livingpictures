@@ -36,11 +36,11 @@ fun LivingPicturesApp(modifier: Modifier = Modifier) {
     }
 
     val topBarState = remember {
-        mutableStateOf(TopBarUiState())
+        mutableStateOf(appState.value.createTopBarUiState())
     }
 
     val bottomBarState = remember {
-        mutableStateOf(BottomBarUiState())
+        mutableStateOf(appState.value.createBottomBarState())
     }
 
     val pagesRepository = remember {

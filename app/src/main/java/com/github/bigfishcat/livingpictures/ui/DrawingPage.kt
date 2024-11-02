@@ -19,6 +19,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
@@ -133,15 +134,19 @@ fun DrawingPage(
                 else -> Unit
             }
 
-            pageUiState.objects.forEach { draw(it) }
+            with(drawContext.canvas.nativeCanvas) {
+                val checkPoint = saveLayer(null, null)
+                pageUiState.objects.forEach { draw(it) }
 
-            if (motionType != MotionType.Idle && !currentPath.isEmpty) {
-                when (selectedInstrument) {
-                    Instrument.Eraser -> erase(currentPath)
-                    Instrument.Pencil -> drawCurve(currentPath, color, 4f)
-                    Instrument.Brush -> drawCurve(currentPath, color, 10f)
-                    else -> {}
+                if (motionType != MotionType.Idle && !currentPath.isEmpty) {
+                    when (selectedInstrument) {
+                        Instrument.Eraser -> erase(currentPath)
+                        Instrument.Pencil -> drawCurve(currentPath, color, 4f)
+                        Instrument.Brush -> drawCurve(currentPath, color, 10f)
+                        else -> {}
+                    }
                 }
+                restoreToCount(checkPoint)
             }
         }
     }
