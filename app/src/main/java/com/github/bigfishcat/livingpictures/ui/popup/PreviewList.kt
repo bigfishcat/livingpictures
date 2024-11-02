@@ -104,7 +104,7 @@ fun PreviewListWithButtons(
         }
 
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            PreviewList(Modifier.weight(1.0f), pages, bitmapFactory)
+            PreviewList(Modifier.weight(1.0f), pages, bitmapFactory, action)
 
             PreviewBottomBar(confirmDeleteAll, confirmGeneratePages, action)
         }
@@ -313,7 +313,7 @@ fun PreviewList(
 
 @Composable
 fun PagePreview(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     page: PageUiState,
     bitmapFactory: suspend (PageUiState) -> ImageBitmap?
 ) {
@@ -321,6 +321,7 @@ fun PagePreview(
 
     val tileModifier = modifier
         .padding(6.dp)
+        .shadow(1.dp)
         .fillMaxWidth()
 
     when (val imageState = state.value) {

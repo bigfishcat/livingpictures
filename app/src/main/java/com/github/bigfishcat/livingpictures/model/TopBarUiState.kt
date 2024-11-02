@@ -11,5 +11,5 @@ fun AppUiState.createTopBarUiState() = TopBarUiState(
     canUndo = !playbackInProgress && currentPageState.objects.isNotEmpty(),
     canRedo = !playbackInProgress && currentPageState.undoObjects.isNotEmpty(),
     playbackInProgress = playbackInProgress,
-    enabled = popupShown != PopupShown.ExportToGif && popupShown != PopupShown.PagesPreview
+    enabled = popupShown != PopupShown.ExportToGif && popupShown != PopupShown.PagesPreview && popupShown != PopupShown.LongProgress
 )

@@ -6,5 +6,6 @@ enum class PopupShown {
     WheelColorPicker,
     FiguresPicker,
     PagesPreview,
-    ExportToGif
+    ExportToGif,
+    LongProgress
 }

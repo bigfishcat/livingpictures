@@ -45,7 +45,7 @@ private fun ExportToGif(
             progress = { currentProgress.floatValue },
             modifier = Modifier
                 .padding(horizontal = 6.dp)
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically)
         )
 
         LaunchedEffect(export) {

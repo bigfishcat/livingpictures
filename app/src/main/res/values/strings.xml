@@ -27,4 +27,6 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="count">Number of pages</string>
+    <string name="page_created">New page created</string>
+    <string name="page_copied">Copy of the page created</string>
 </resources>
