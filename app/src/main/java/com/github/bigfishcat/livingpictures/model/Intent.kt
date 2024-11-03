@@ -11,6 +11,8 @@ sealed interface Intent {
 
     data object ShowPagesPreview : Intent
 
+    data object ShowPlayDuePicker : Intent
+
     data class SelectInstrument(val instrument: Instrument) : Intent
 
     data class SelectColor(val color: Color) : Intent
@@ -19,7 +21,7 @@ sealed interface Intent {
 
     data object Redo : Intent
 
-    data object Play : Intent
+    data class Play(val delay: Long) : Intent
 
     data object Pause : Intent
 
@@ -37,5 +39,5 @@ sealed interface Intent {
 
     data object HidePopup : Intent
 
-    data object Share : Intent
+    data class Share(val delay: Long) : Intent
 }

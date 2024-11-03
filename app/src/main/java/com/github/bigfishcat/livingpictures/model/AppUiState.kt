@@ -9,5 +9,6 @@ data class AppUiState(
     val instrument: Instrument = Instrument.Pencil,
     val popupShown: PopupShown = PopupShown.None,
     val playbackInProgress: Boolean = false,
+    val playbackDelay: Long = 1000,
     val currentPageState: PageUiState = PageUiState()
 )

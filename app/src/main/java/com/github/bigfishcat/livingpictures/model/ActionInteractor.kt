@@ -53,8 +53,8 @@ fun CoroutineScope.handleAction(
             updateAppState.invoke(state.copy(playbackInProgress = false))
         }
 
-        Intent.Play -> {
-            updateAppState.invoke(state.copy(playbackInProgress = true))
+        is Intent.Play -> {
+            updateAppState.invoke(state.copy(playbackInProgress = true, playbackDelay = intent.delay))
         }
 
         Intent.Undo -> {
@@ -89,7 +89,13 @@ fun CoroutineScope.handleAction(
             updateAppState.invoke(state.copy(popupShown = PopupShown.HueColorPicker))
         }
 
-        Intent.Share -> updateAppState.invoke(state.copy(popupShown = PopupShown.ExportToGif))
+        Intent.ShowPlayDuePicker -> {
+            updateAppState.invoke(state.copy(popupShown = PopupShown.DuePicker))
+        }
+
+        is Intent.Share -> {
+            updateAppState.invoke(state.copy(popupShown = PopupShown.ExportToGif, playbackDelay = intent.delay))
+        }
     }
 }
 

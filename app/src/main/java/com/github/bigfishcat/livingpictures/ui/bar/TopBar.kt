@@ -115,7 +115,7 @@ fun TopBar(
         }
 
         IconButton(
-            onClick = { action(Intent.Play) },
+            onClick = { action(Intent.ShowPlayDuePicker) },
             enabled = !state.playbackInProgress && state.enabled
         ) {
             Image(

@@ -35,10 +35,10 @@ private class InstrumentModel(
 }
 
 @Composable
-fun FigurePicker(action: (Intent) -> Unit = {}) {
+fun FigurePicker(bottomBarHeight: Int, action: (Intent) -> Unit = {}) {
     Popup(
         alignment = Alignment.BottomCenter,
-        offset = IntOffset(0, -108), // todo calculate bottom padding
+        offset = IntOffset(0, -bottomBarHeight),
         onDismissRequest = { action(Intent.HidePopup) }
     ) {
         FigurePickerContent(action)
