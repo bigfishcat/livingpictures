@@ -66,11 +66,20 @@ fun CoroutineScope.handleAction(
         }
 
         is Intent.SelectColor -> {
-            updateAppState.invoke(state.copy(color = intent.color))
+            updateAppState.invoke(state.copy(paintProperties = state.paintProperties.copy(color = intent.color)))
         }
 
         is Intent.SelectInstrument -> {
-            updateAppState.invoke(state.copy(instrument = intent.instrument))
+            val popup = when(intent.instrument) {
+                Instrument.Pencil -> PopupShown.PencilStrokeWidthPicker
+                Instrument.Brush -> PopupShown.BrushStrokeWidthPicker
+                Instrument.Eraser -> PopupShown.EraserStrokeWidthPicker
+                else -> PopupShown.None
+            }
+            updateAppState.invoke(state.copy(
+                paintProperties = state.paintProperties.copy(instrument = intent.instrument),
+                popupShown = popup
+            ))
         }
 
         Intent.ShowFiguresPicker -> {
@@ -95,6 +104,18 @@ fun CoroutineScope.handleAction(
 
         is Intent.Share -> {
             updateAppState.invoke(state.copy(popupShown = PopupShown.ExportToGif, playbackDelay = intent.delay))
+        }
+
+        is Intent.SelectBrushStrokeWidth -> {
+            updateAppState.invoke(state.copy(paintProperties = state.paintProperties.copy(brushStrokeWidth = intent.strokeWidth)))
+        }
+
+        is Intent.SelectEraserStrokeWidth -> {
+            updateAppState.invoke(state.copy(paintProperties = state.paintProperties.copy(eraserStrokeWidth = intent.strokeWidth)))
+        }
+
+        is Intent.SelectPencilStrokeWidth -> {
+            updateAppState.invoke(state.copy(paintProperties = state.paintProperties.copy(pencilStrokeWidth = intent.strokeWidth)))
         }
     }
 }

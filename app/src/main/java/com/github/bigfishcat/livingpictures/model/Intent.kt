@@ -17,6 +17,12 @@ sealed interface Intent {
 
     data class SelectColor(val color: Color) : Intent
 
+    data class SelectBrushStrokeWidth(val strokeWidth: BrushStrokeWidth) : Intent
+
+    data class SelectEraserStrokeWidth(val strokeWidth: BrushStrokeWidth) : Intent
+
+    data class SelectPencilStrokeWidth(val strokeWidth: PencilStrokeWidth) : Intent
+
     data object Undo : Intent
 
     data object Redo : Intent

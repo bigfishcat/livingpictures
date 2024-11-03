@@ -32,6 +32,7 @@ import com.github.bigfishcat.livingpictures.R
 import com.github.bigfishcat.livingpictures.model.Instrument
 import com.github.bigfishcat.livingpictures.model.MotionType
 import com.github.bigfishcat.livingpictures.model.PageUiState
+import com.github.bigfishcat.livingpictures.model.PaintProperties
 import com.github.bigfishcat.livingpictures.model.draw
 import com.github.bigfishcat.livingpictures.model.drawCurve
 import com.github.bigfishcat.livingpictures.model.erase
@@ -41,11 +42,13 @@ import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 fun DrawingPage(
     modifier: Modifier = Modifier,
     pageUiState: PageUiState,
-    selectedInstrument: Instrument,
-    color: Color,
+    paintProperties: PaintProperties,
     enabled: Boolean,
     updatePageState: (PageUiState) -> Unit = {}
 ) {
+    val selectedInstrument = paintProperties.instrument
+    val color = paintProperties.color
+
     var motionType by remember {
         mutableStateOf(MotionType.Idle)
     }
@@ -107,7 +110,7 @@ fun DrawingPage(
                 if (selectedInstrument.canDraw) {
                     currentPath.lineTo(currentPosition.x, currentPosition.y)
                     updatePageState.invoke(
-                        pageUiState.addObject(selectedInstrument, color, currentPath)
+                        pageUiState.addObject(paintProperties, currentPath)
                     )
                     currentPath = Path()
                 }
@@ -146,9 +149,9 @@ fun DrawingPage(
 
                 if (motionType != MotionType.Idle && !currentPath.isEmpty && enabled) {
                     when (selectedInstrument) {
-                        Instrument.Eraser -> erase(currentPath)
-                        Instrument.Pencil -> drawCurve(currentPath, color, 4f)
-                        Instrument.Brush -> drawCurve(currentPath, color, 10f)
+                        Instrument.Eraser -> erase(currentPath, paintProperties.eraserStrokeWidth.value)
+                        Instrument.Pencil -> drawCurve(currentPath, color, paintProperties.pencilStrokeWidth.value)
+                        Instrument.Brush -> drawCurve(currentPath, color, paintProperties.brushStrokeWidth.value)
                         else -> {}
                     }
                 }
@@ -189,8 +192,7 @@ private fun DefaultDrawingPage() {
     LivingPicturesTheme {
         DrawingPage(
             pageUiState = PageUiState(),
-            selectedInstrument = Instrument.Pencil,
-            color = Color.Blue,
+            paintProperties = PaintProperties(),
             enabled = false
         )
     }

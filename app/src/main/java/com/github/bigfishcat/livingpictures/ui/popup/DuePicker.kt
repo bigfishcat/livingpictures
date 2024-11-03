@@ -99,7 +99,8 @@ fun DuePickerDialog(initialValue: Long, confirm: (Long) -> Unit, dismiss: () -> 
 }
 
 @Preview
-@Composable fun DefaultDuePickerDialog() {
+@Composable
+fun DefaultDuePickerDialog() {
     LivingPicturesTheme {
         DuePickerDialog(100, {}, {})
     }
