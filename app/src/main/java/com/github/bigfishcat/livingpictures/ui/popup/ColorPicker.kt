@@ -56,10 +56,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun PaletteColorPicker(action: (Intent) -> Unit = {}) {
+fun PaletteColorPicker(bottomBarHeight: Int, action: (Intent) -> Unit = {}) {
     Popup(
         alignment = Alignment.BottomCenter,
-        offset = IntOffset(0, -108), // todo calculate bottom padding
+        offset = IntOffset(0, -bottomBarHeight),
         onDismissRequest = { action(Intent.HidePopup) }
     ) {
         PaletteColorPickerContent(action)
@@ -94,10 +94,10 @@ private fun PaletteColorPickerContent(action: (Intent) -> Unit) {
 }
 
 @Composable
-fun HueColorPicker(color: Color, action: (Intent) -> Unit = {}) {
+fun HueColorPicker(bottomBarHeight: Int, color: Color, action: (Intent) -> Unit = {}) {
     Popup(
         alignment = Alignment.BottomCenter,
-        offset = IntOffset(0, -108), // todo calculate bottom padding
+        offset = IntOffset(0, -bottomBarHeight),
         onDismissRequest = { action(Intent.HidePopup) }
     ) {
         HueColorPickerContent(color, action)

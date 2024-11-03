@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
 import com.github.bigfishcat.livingpictures.R
 import com.github.bigfishcat.livingpictures.domain.BitmapFactory
@@ -40,6 +41,7 @@ import com.github.bigfishcat.livingpictures.ui.popup.FigurePicker
 import com.github.bigfishcat.livingpictures.ui.popup.HueColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.LongProgressPopup
 import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
+import com.github.bigfishcat.livingpictures.ui.popup.PlayDuePickerDialog
 import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
 import com.github.bigfishcat.livingpictures.ui.theme.Background
 import kotlinx.coroutines.delay
@@ -75,6 +77,10 @@ fun LivingPicturesApp(
 
     val playbackInProgress = remember {
         mutableStateOf(appState.value.playbackInProgress)
+    }
+
+    val bottomBarSize = remember {
+        mutableStateOf(IntSize.Zero)
     }
 
     val canvasSize = remember {
@@ -125,7 +131,7 @@ fun LivingPicturesApp(
         var index = 0
         progress.invoke(0f)
 
-        gifGenerator.saveToFile(pages, 2000) { page ->
+        gifGenerator.saveToFile(pages, appState.value.playbackDelay.toInt()) { page ->
             drawToBitmap(page).also {
                 index++
                 progress.invoke((index.toFloat() / pages.size).coerceAtMost(1f))
@@ -142,7 +148,15 @@ fun LivingPicturesApp(
                 .fillMaxSize()
                 .background(color = Background),
             topBar = { TopBar(topBarState, modifier, ::handleAction) },
-            bottomBar = { BottomBar(bottomBarState, modifier, ::handleAction) }
+            bottomBar = {
+                BottomBar(
+                    uiState = bottomBarState,
+                    modifier = modifier.onGloballyPositioned { coordinates ->
+                        bottomBarSize.value = coordinates.size
+                    },
+                    action = ::handleAction
+                )
+            }
         ) { innerPadding ->
             DrawingPage(
                 modifier = modifier
@@ -160,16 +174,18 @@ fun LivingPicturesApp(
 
             when (appState.value.popupShown) {
                 PopupShown.None -> {}
-                PopupShown.PaletteColorPicker -> PaletteColorPicker(::handleAction)
-                PopupShown.HueColorPicker -> HueColorPicker(appState.value.color, ::handleAction)
-                PopupShown.FiguresPicker -> FigurePicker(::handleAction)
+                PopupShown.PaletteColorPicker -> PaletteColorPicker(bottomBarSize.value.height, ::handleAction)
+                PopupShown.HueColorPicker -> HueColorPicker(bottomBarSize.value.height, appState.value.color, ::handleAction)
+                PopupShown.FiguresPicker -> FigurePicker(bottomBarSize.value.height, ::handleAction)
                 PopupShown.PagesPreview -> PreviewListPopup(
+                    appState.value,
                     pagesRepository.pages,
                     ::drawToBitmap,
                     ::handleAction
                 )
                 PopupShown.ExportToGif -> ExportToGifPopup(::exportToGif, ::handleAction)
                 PopupShown.LongProgress -> LongProgressPopup()
+                PopupShown.DuePicker -> PlayDuePickerDialog(appState.value, ::handleAction)
             }
 
             BackHandler(enabled = appState.value.popupShown != PopupShown.None) {
@@ -194,7 +210,7 @@ fun LivingPicturesApp(
                 while (playbackInProgress.value) {
                     if (iterator.hasNext()) {
                         updatePage(iterator.next())
-                        delay(2000L)
+                        delay(appState.value.playbackDelay)
                     } else {
                         iterator = pagesRepository.pages.iterator()
                     }

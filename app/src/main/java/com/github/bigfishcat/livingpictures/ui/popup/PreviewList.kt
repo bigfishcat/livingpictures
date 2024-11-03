@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.github.bigfishcat.livingpictures.R
+import com.github.bigfishcat.livingpictures.model.AppUiState
 import com.github.bigfishcat.livingpictures.model.Intent
 import com.github.bigfishcat.livingpictures.model.PageUiState
 import com.github.bigfishcat.livingpictures.ui.theme.Active
@@ -70,6 +71,7 @@ private sealed interface ImageState {
 
 @Composable
 fun PreviewListPopup(
+    appState: AppUiState,
     pages: List<PageUiState>,
     bitmapFactory: suspend (PageUiState) -> ImageBitmap?,
     action: (Intent) -> Unit = {}
@@ -79,12 +81,13 @@ fun PreviewListPopup(
         offset = IntOffset(0, 0),
         onDismissRequest = { action(Intent.HidePopup) }
     ) {
-        PreviewListWithButtons(pages, bitmapFactory, action)
+        PreviewListWithButtons(appState, pages, bitmapFactory, action)
     }
 }
 
 @Composable
 fun PreviewListWithButtons(
+    appState: AppUiState,
     pages: List<PageUiState>,
     bitmapFactory: suspend (PageUiState) -> ImageBitmap?,
     action: (Intent) -> Unit = {}
@@ -103,10 +106,14 @@ fun PreviewListWithButtons(
             mutableStateOf(false)
         }
 
+        val confirmShare = remember {
+            mutableStateOf(false)
+        }
+
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             PreviewList(Modifier.weight(1.0f), pages, bitmapFactory, action)
 
-            PreviewBottomBar(confirmDeleteAll, confirmGeneratePages, action)
+            PreviewBottomBar(confirmDeleteAll, confirmGeneratePages, confirmShare, action)
         }
 
         if (confirmDeleteAll.value) {
@@ -116,6 +123,14 @@ fun PreviewListWithButtons(
         if (confirmGeneratePages.value) {
             GeneratePagesDialog(confirmGeneratePages, action)
         }
+
+        if (confirmShare.value) {
+            DuePickerDialog(
+                appState.playbackDelay,
+                { action.invoke(Intent.Share(it)) },
+                { confirmShare.value = false }
+            )
+        }
     }
 }
 
@@ -123,6 +138,7 @@ fun PreviewListWithButtons(
 private fun PreviewBottomBar(
     confirmDeleteAll: MutableState<Boolean>,
     confirmGeneratePages: MutableState<Boolean>,
+    confirmShare: MutableState<Boolean>,
     action: (Intent) -> Unit
 ) {
     Row(
@@ -150,7 +166,7 @@ private fun PreviewBottomBar(
         }
 
         IconButton(
-            onClick = { action.invoke(Intent.Share) }
+            onClick = { confirmShare.value = true }
         ) {
             Image(
                 imageVector = Icons.Filled.Share,
@@ -399,6 +415,7 @@ fun DefaultPreviewList() {
 fun DefaultPreviewListWithButtons() {
     LivingPicturesTheme {
         PreviewListWithButtons(
+            AppUiState(),
             pages = listOf(
                 PageUiState(),
                 PageUiState(),

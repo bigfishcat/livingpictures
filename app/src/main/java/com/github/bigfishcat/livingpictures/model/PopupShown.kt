@@ -7,5 +7,6 @@ enum class PopupShown {
     FiguresPicker,
     PagesPreview,
     ExportToGif,
-    LongProgress
+    LongProgress,
+    DuePicker
 }
