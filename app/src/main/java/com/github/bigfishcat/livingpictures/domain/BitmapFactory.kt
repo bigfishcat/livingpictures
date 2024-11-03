@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import com.github.bigfishcat.livingpictures.model.PageUiState
@@ -31,13 +32,17 @@ class BitmapFactory {
         }
         val canvas = Canvas(bitmap)
 
-        drawScope.draw(
-            density = Density(1f),
-            layoutDirection = LayoutDirection.Ltr,
-            canvas = canvas,
-            size = size,
-        ) {
-            page.objects.forEach { draw(it) }
+        with(canvas.nativeCanvas) {
+            val checkPoint = saveLayer(null, null)
+            drawScope.draw(
+                density = Density(1f),
+                layoutDirection = LayoutDirection.Ltr,
+                canvas = canvas,
+                size = size,
+            ) {
+                page.objects.forEach { draw(it) }
+            }
+            restoreToCount(checkPoint)
         }
         return bitmap
     }

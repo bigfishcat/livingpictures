@@ -72,16 +72,16 @@ fun BottomBar(
                 colorFilter = colorFilter(BottomItem.Eraser)
             )
         }
-        IconButton(
-            onClick = { action(Intent.ShowFiguresPicker) },
-            enabled = enabled
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.instruments),
-                contentDescription = stringResource(id = R.string.instruments),
-                colorFilter = colorFilter(BottomItem.Figures)
-            )
-        }
+//        IconButton(
+//            onClick = { action(Intent.ShowFiguresPicker) },
+//            enabled = enabled
+//        ) {
+//            Image(
+//                painter = painterResource(id = R.drawable.instruments),
+//                contentDescription = stringResource(id = R.string.instruments),
+//                colorFilter = colorFilter(BottomItem.Figures)
+//            )
+//        }
         IconButton(
             onClick = { action(Intent.ShowPaletteColorPicker) },
             enabled = enabled
