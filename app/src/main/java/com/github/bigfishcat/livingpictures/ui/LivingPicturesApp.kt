@@ -36,11 +36,14 @@ import com.github.bigfishcat.livingpictures.model.createTopBarUiState
 import com.github.bigfishcat.livingpictures.model.handleAction
 import com.github.bigfishcat.livingpictures.ui.bar.BottomBar
 import com.github.bigfishcat.livingpictures.ui.bar.TopBar
+import com.github.bigfishcat.livingpictures.ui.popup.BrushStrokeWidthPicker
+import com.github.bigfishcat.livingpictures.ui.popup.EraserStrokeWidthPicker
 import com.github.bigfishcat.livingpictures.ui.popup.ExportToGifPopup
 import com.github.bigfishcat.livingpictures.ui.popup.FigurePicker
 import com.github.bigfishcat.livingpictures.ui.popup.HueColorPicker
 import com.github.bigfishcat.livingpictures.ui.popup.LongProgressPopup
 import com.github.bigfishcat.livingpictures.ui.popup.PaletteColorPicker
+import com.github.bigfishcat.livingpictures.ui.popup.PencilStrokeWidthPicker
 import com.github.bigfishcat.livingpictures.ui.popup.PlayDuePickerDialog
 import com.github.bigfishcat.livingpictures.ui.popup.PreviewListPopup
 import com.github.bigfishcat.livingpictures.ui.theme.Background
@@ -166,8 +169,7 @@ fun LivingPicturesApp(
                         canvasSize.value = coordinates.size.toSize()
                     },
                 pageUiState = appState.value.currentPageState,
-                selectedInstrument = appState.value.instrument,
-                color = appState.value.color,
+                paintProperties = appState.value.paintProperties,
                 enabled = !playbackInProgress.value && appState.value.popupShown != PopupShown.ExportToGif,
                 ::updatePage
             )
@@ -175,7 +177,11 @@ fun LivingPicturesApp(
             when (appState.value.popupShown) {
                 PopupShown.None -> {}
                 PopupShown.PaletteColorPicker -> PaletteColorPicker(bottomBarSize.value.height, ::handleAction)
-                PopupShown.HueColorPicker -> HueColorPicker(bottomBarSize.value.height, appState.value.color, ::handleAction)
+                PopupShown.HueColorPicker -> HueColorPicker(
+                    bottomBarSize.value.height,
+                    appState.value.paintProperties.color,
+                    ::handleAction
+                )
                 PopupShown.FiguresPicker -> FigurePicker(bottomBarSize.value.height, ::handleAction)
                 PopupShown.PagesPreview -> PreviewListPopup(
                     appState.value,
@@ -186,6 +192,21 @@ fun LivingPicturesApp(
                 PopupShown.ExportToGif -> ExportToGifPopup(::exportToGif, ::handleAction)
                 PopupShown.LongProgress -> LongProgressPopup()
                 PopupShown.DuePicker -> PlayDuePickerDialog(appState.value, ::handleAction)
+                PopupShown.PencilStrokeWidthPicker -> PencilStrokeWidthPicker(
+                    bottomBarSize.value.height,
+                    appState.value,
+                    ::handleAction
+                )
+                PopupShown.BrushStrokeWidthPicker -> BrushStrokeWidthPicker(
+                    bottomBarSize.value.height,
+                    appState.value,
+                    ::handleAction
+                )
+                PopupShown.EraserStrokeWidthPicker -> EraserStrokeWidthPicker(
+                    bottomBarSize.value.height,
+                    appState.value,
+                    ::handleAction
+                )
             }
 
             BackHandler(enabled = appState.value.popupShown != PopupShown.None) {

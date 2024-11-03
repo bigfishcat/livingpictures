@@ -23,7 +23,7 @@ fun AppUiState.createBottomBarState(): BottomBarUiState {
         PopupShown.FiguresPicker -> BottomItem.Figures
 
         else -> {
-            when (instrument) {
+            when (paintProperties.instrument) {
                 Instrument.Pencil -> BottomItem.Pencil
                 Instrument.Brush -> BottomItem.Brush
                 Instrument.Eraser -> BottomItem.Eraser
@@ -36,7 +36,7 @@ fun AppUiState.createBottomBarState(): BottomBarUiState {
     }
 
     return BottomBarUiState(
-        color = color,
+        color = paintProperties.color,
         selectedItem = selectedItem,
         enabled = !playbackInProgress && popupShown != PopupShown.ExportToGif && popupShown != PopupShown.LongProgress
     )

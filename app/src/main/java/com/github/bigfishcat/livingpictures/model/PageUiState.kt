@@ -21,10 +21,24 @@ class LineProperties(
     val strokeWidth: Float = 4f
 )
 
+enum class PencilStrokeWidth(val value: Float) {
+    Thin(4f),
+    Medium(8f),
+    Thick(12f)
+}
+
+enum class BrushStrokeWidth(val value: Float) {
+    S1(15f),
+    S2(25f),
+    S3(35f),
+    S4(45f),
+    S5(55f)
+}
+
 sealed interface DrawObject {
     class Curve(val path: Path, val properties: LineProperties) : DrawObject
 
-    class Erase(val path: Path, val strokeWidth: Float = 10f) : DrawObject
+    class Erase(val path: Path, val strokeWidth: Float) : DrawObject
 
     class Circle(val center: Offset, val radius: Float, val properties: LineProperties) : DrawObject
 
@@ -58,13 +72,15 @@ data class PageUiState(
         )
     }
 
-    fun addObject(instrument: Instrument, color: Color, path: Path): PageUiState {
-        val drawObject = when (instrument) {
-            Instrument.Pencil -> DrawObject.Curve(path, LineProperties(color))
-            Instrument.Brush -> DrawObject.Curve(path, LineProperties(color, 10f))
-            Instrument.Eraser -> DrawObject.Erase(path)
+    fun addObject(
+        paintProperties: PaintProperties,
+        path: Path): PageUiState {
+        val drawObject = when (paintProperties.instrument) {
+            Instrument.Pencil -> DrawObject.Curve(path, LineProperties(paintProperties.color, paintProperties.pencilStrokeWidth.value))
+            Instrument.Brush -> DrawObject.Curve(path, LineProperties(paintProperties.color, paintProperties.brushStrokeWidth.value))
+            Instrument.Eraser -> DrawObject.Erase(path, paintProperties.eraserStrokeWidth.value)
             Instrument.Triangle, Instrument.Rectangle, Instrument.Circle, Instrument.Arrow -> {
-                Log.e("DRAW_OBJECT", "Can't add draw object for instrument $instrument")
+                Log.e("DRAW_OBJECT", "Can't add draw object for instrument $paintProperties.instrument")
                 return this
             }
         }
@@ -92,7 +108,7 @@ fun DrawScope.drawCurve(path: Path, color: Color, strokeWidth: Float) {
     )
 }
 
-fun DrawScope.erase(path: Path, strokeWidth: Float = 10f) {
+fun DrawScope.erase(path: Path, strokeWidth: Float) {
     drawPath(
         color = Color.Transparent,
         path = path,

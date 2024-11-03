@@ -8,5 +8,8 @@ enum class PopupShown {
     PagesPreview,
     ExportToGif,
     LongProgress,
-    DuePicker
+    DuePicker,
+    PencilStrokeWidthPicker,
+    BrushStrokeWidthPicker,
+    EraserStrokeWidthPicker,
 }
