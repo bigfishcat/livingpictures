@@ -15,19 +15,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -44,8 +37,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -56,8 +47,6 @@ import com.github.bigfishcat.livingpictures.model.Intent
 import com.github.bigfishcat.livingpictures.model.PageUiState
 import com.github.bigfishcat.livingpictures.ui.theme.Active
 import com.github.bigfishcat.livingpictures.ui.theme.Background
-import com.github.bigfishcat.livingpictures.ui.theme.Black
-import com.github.bigfishcat.livingpictures.ui.theme.Blue
 import com.github.bigfishcat.livingpictures.ui.theme.LivingPicturesTheme
 import com.github.bigfishcat.livingpictures.ui.theme.PopupStroke
 
@@ -192,39 +181,15 @@ private fun DeleteAllDialog(
     confirmDeleteAll: MutableState<Boolean>,
     action: (Intent) -> Unit = {}
 ) {
-    AlertDialog(
-        onDismissRequest = {
+    ConfirmDialog(
+        iconRes = R.drawable.delete_all,
+        titleRes = R.string.delete_all,
+        confirm = {
             confirmDeleteAll.value = false
+            action.invoke(Intent.DeleteAll)
         },
-        icon = {
-            Icon(painter = painterResource(id = R.drawable.delete_all), contentDescription = null)
-        },
-        title = {
-            Text(
-                text = stringResource(id = R.string.delete_all),
-                color = Black
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                confirmDeleteAll.value = false
-                action.invoke(Intent.DeleteAll)
-            }) {
-                Text(
-                    text = stringResource(id = R.string.confirm),
-                    color = Blue
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = {
-                confirmDeleteAll.value = false
-            }) {
-                Text(
-                    text = stringResource(id = R.string.cancel),
-                    color = Blue
-                )
-            }
+        dismiss = {
+            confirmDeleteAll.value = false
         }
     )
 }
@@ -244,65 +209,14 @@ private fun GeneratePagesDialog(
         }
     }
 
-    AlertDialog(
-        onDismissRequest = {
-            confirmGeneratePages.value = false
-        },
-        icon = {
-            Icon(
-                painter = painterResource(id = R.drawable.generate_pages),
-                contentDescription = null
-            )
-        },
-        title = {
-            Text(
-                text = stringResource(id = R.string.generate_pages),
-                color = Black
-            )
-        },
-        text = {
-            OutlinedTextField(
-                value = text.value,
-                onValueChange = {
-                    if (pattern.matches(it)) text.value = it
-                },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.count),
-                        color = Black
-                    )
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { confirm() }
-                )
-            )
-        },
-        confirmButton = {
-            TextButton(
-                onClick = ::confirm,
-                enabled = text.value.isNotEmpty()
-            ) {
-                Text(
-                    text = stringResource(id = R.string.confirm),
-                    color = Blue
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = {
-                confirmGeneratePages.value = false
-            }) {
-                Text(
-                    text = stringResource(id = R.string.cancel),
-                    color = Blue
-                )
-            }
-        }
+    TextFieldDialog(
+        iconRes = R.drawable.generate_pages,
+        titleRes = R.string.generate_pages,
+        labelRes = R.string.count,
+        text = text,
+        onValueChange = { if (pattern.matches(it)) text.value = it },
+        confirm = ::confirm,
+        dismiss = { confirmGeneratePages.value = false }
     )
 }
 

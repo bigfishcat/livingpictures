@@ -170,22 +170,25 @@ fun DrawScope.draw(drawObject: DrawObject) {
 
 suspend fun generateRandomObjects(canvasSize: Size): List<DrawObject> {
     return withContext(Dispatchers.Default) {
-        val count = Random.nextInt(5)
+        val count = Random.nextInt(4) + 2
         (0 until count).map { generateRandomObject(canvasSize) }
     }
 }
 
 fun generateRandomObject(canvasSize: Size): DrawObject {
-    return when (Random.nextInt(3)) {
-        0 -> generateRandomCircle(canvasSize)
-        1 -> generateRandomPolygon(canvasSize)
+    return when (Random.nextInt(5)) {
+        0, 1 -> generateRandomCircle(canvasSize)
+        2, 3 -> generateRandomPolygon(canvasSize)
         else -> generateRandomArrow(canvasSize)
     }
 }
 
+private fun generateRandomPoint(canvasSize: Size) =
+    Random.nextFloat() * canvasSize.width / 2 + canvasSize.width / 4 to
+            Random.nextFloat() * canvasSize.height / 2 + canvasSize.height / 4
+
 fun generateRandomCircle(canvasSize: Size): DrawObject.Circle {
-    val x = Random.nextFloat() * canvasSize.width
-    val y = Random.nextFloat() * canvasSize.height
+    val (x, y) = generateRandomPoint(canvasSize)
 
     val maxRadius = (canvasSize.width - x)
         .coerceAtMost(x)
@@ -194,8 +197,8 @@ fun generateRandomCircle(canvasSize: Size): DrawObject.Circle {
 
     return DrawObject.Circle(
         center = Offset(x, y),
-        radius = Random.nextFloat() * maxRadius,
-        properties = LineProperties(randomColor(), 8f)
+        radius = Random.nextFloat() * maxRadius * 2 / 3 + maxRadius / 3,
+        properties = LineProperties(randomColor(), Random.nextInt(16) + 8f)
     )
 }
 
@@ -203,9 +206,7 @@ fun generateRandomPolygon(canvasSize: Size): DrawObject.Polygon {
     val heads = Random.nextInt(4) + 2
 
     val path = Path().apply {
-        val points = (0 until heads).map {
-            Random.nextFloat() * canvasSize.width to Random.nextFloat() * canvasSize.height
-        }
+        val points = (0 until heads).map { generateRandomPoint(canvasSize) }
         points.mapIndexed { i, (x, y) ->
             if (i == 0) {
                 moveTo(x, y)
@@ -217,7 +218,10 @@ fun generateRandomPolygon(canvasSize: Size): DrawObject.Polygon {
         lineTo(x, y)
         close()
     }
-    return DrawObject.Polygon(path = path, properties = LineProperties(randomColor(), 8f))
+    return DrawObject.Polygon(
+        path = path,
+        properties = LineProperties(randomColor(), Random.nextInt(16) + 8f)
+    )
 }
 
 fun generateRandomArrow(canvasSize: Size): DrawObject.Arrow {
@@ -230,7 +234,7 @@ fun generateRandomArrow(canvasSize: Size): DrawObject.Arrow {
             Random.nextFloat() * canvasSize.width,
             Random.nextFloat() * canvasSize.height
         ),
-        properties = LineProperties(randomColor())
+        properties = LineProperties(randomColor(), Random.nextInt(12) + 4f)
     )
 }
 
