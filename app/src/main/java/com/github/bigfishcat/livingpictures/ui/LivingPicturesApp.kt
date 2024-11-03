@@ -6,7 +6,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -145,18 +144,26 @@ fun LivingPicturesApp(
         }
     }
 
-    Surface(color = MaterialTheme.colorScheme.background) {
+    Surface(color = Background) {
         Scaffold(
             modifier = modifier
                 .fillMaxSize()
                 .background(color = Background),
-            topBar = { TopBar(topBarState, modifier, ::handleAction) },
+            topBar = {
+                TopBar(
+                    uiState = topBarState,
+                    modifier = modifier.background(color = Background),
+                    action = ::handleAction
+                )
+            },
             bottomBar = {
                 BottomBar(
                     uiState = bottomBarState,
-                    modifier = modifier.onGloballyPositioned { coordinates ->
-                        bottomBarSize.value = coordinates.size
-                    },
+                    modifier = modifier
+                        .background(color = Background)
+                        .onGloballyPositioned { coordinates ->
+                            bottomBarSize.value = coordinates.size
+                        },
                     action = ::handleAction
                 )
             }
@@ -164,6 +171,7 @@ fun LivingPicturesApp(
             DrawingPage(
                 modifier = modifier
                     .padding(innerPadding)
+                    .background(color = Background)
                     .fillMaxSize()
                     .onGloballyPositioned { coordinates ->
                         canvasSize.value = coordinates.size.toSize()
@@ -176,12 +184,17 @@ fun LivingPicturesApp(
 
             when (appState.value.popupShown) {
                 PopupShown.None -> {}
-                PopupShown.PaletteColorPicker -> PaletteColorPicker(bottomBarSize.value.height, ::handleAction)
+                PopupShown.PaletteColorPicker -> PaletteColorPicker(
+                    bottomBarSize.value.height,
+                    ::handleAction
+                )
+
                 PopupShown.HueColorPicker -> HueColorPicker(
                     bottomBarSize.value.height,
                     appState.value.paintProperties.color,
                     ::handleAction
                 )
+
                 PopupShown.FiguresPicker -> FigurePicker(bottomBarSize.value.height, ::handleAction)
                 PopupShown.PagesPreview -> PreviewListPopup(
                     appState.value,
@@ -189,6 +202,7 @@ fun LivingPicturesApp(
                     ::drawToBitmap,
                     ::handleAction
                 )
+
                 PopupShown.ExportToGif -> ExportToGifPopup(::exportToGif, ::handleAction)
                 PopupShown.LongProgress -> LongProgressPopup()
                 PopupShown.DuePicker -> PlayDuePickerDialog(appState.value, ::handleAction)
@@ -197,11 +211,13 @@ fun LivingPicturesApp(
                     appState.value,
                     ::handleAction
                 )
+
                 PopupShown.BrushStrokeWidthPicker -> BrushStrokeWidthPicker(
                     bottomBarSize.value.height,
                     appState.value,
                     ::handleAction
                 )
+
                 PopupShown.EraserStrokeWidthPicker -> EraserStrokeWidthPicker(
                     bottomBarSize.value.height,
                     appState.value,
